@@ -59,23 +59,34 @@ public class FileUploadController {
       }
   }
 
-  private void savefile(MultipartFile file) {
+  private String savefile(MultipartFile file) {
     String filename = getUploadFileName(file.getOriginalFilename());
+
+
+
     enhanseExtension(filename);
-    Path uploadfile = Paths.get("C:/upload/files/" + filename);
+
+
+    Path uploadfile = Paths.get("C:/Users/kyouyu/Desktop/my-app/src/assets/images/upload-file/" + filename);
     try (OutputStream os = Files.newOutputStream(uploadfile, StandardOpenOption.CREATE)) {
       byte[] bytes = file.getBytes();
       os.write(bytes);
     } catch (IOException e) {
       //エラー処理は省略
+      return "";
     }
+
+    return filename;
   }
 
-  private void savefiles(List<MultipartFile> multipartFiles) {
+  private String savefiles(List<MultipartFile> multipartFiles) {
       createDirectory();
+      String fileName = "";
       for (MultipartFile file : multipartFiles) {
-          savefile(file);
+        fileName = savefile(file);
       }
+
+      return fileName;
   }
 
 //  @RequestMapping(path = "/", method = RequestMethod.GET)
@@ -91,15 +102,17 @@ public class FileUploadController {
 
     if (form.getFile()==null || form.getFile().isEmpty()) {
       //エラー処理は省略
-      return "a";
+      return null;
     }
-    savefiles(form.getFile());
 
-    return "";
+    String fileName = savefiles(form.getFile());
+
+
+
+
+
+    return fileName;
   }
-
-
-
 
 
 }
